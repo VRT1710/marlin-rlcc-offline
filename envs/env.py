@@ -7,10 +7,12 @@ import logging
 from gym import Env
 from gym.spaces import Box
 from stable_baselines3.common.type_aliases import GymObs, GymStepReturn
+import gym
 
 import grpc_server.congestion_control_server as cc_server
 from envs.utils import constants
 import math
+import random
 from envs.utils.constants import Parameters, State,Statistic
 
 import pprint
@@ -81,7 +83,8 @@ class CongestionControlEnv(Env):
         self.current_traffic_patterns = None
         self.action_space = Box(low=-1, high=+1, shape=(1,), dtype=np.float32)
         self.observation_space = Box(low=-float("inf"), high=float("inf"), shape=(observation_length, ))
-
+        #self.observation_space = Box(low=-float("inf"), high=float("inf"), shape=(990, ))
+        
         np.random.seed(random_seed)
         self.current_step = 0
         self.total_steps = 0
@@ -380,6 +383,11 @@ class CongestionControlEnv(Env):
             with open(f"logs/evaluation_time.log",
                       "w+") as log:
                 log.write(str(time_taken))
+                
+                
+    def seed(self, seed=None):
+        self.np_random, seed = gym.utils.seeding.np_random(seed)
+        return [seed]
 
     def reset(self) -> GymObs:
         self.report()
@@ -495,6 +503,10 @@ class CongestionControlEnv(Env):
             self._init_background_traffic_timers()
             self.episode_start_time = time.time()
 
+
+        # THIS MAKES THE POLICY RANDOM
+        # action[0] = random.uniform(-1, 1)
+        
         cwnd_value = self._cwnd_update_throttle(action[0])
 
         # CWND value must be in Bytes
