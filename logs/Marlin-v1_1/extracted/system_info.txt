@@ -1,0 +1,7 @@
+- OS: Linux-5.15.0-107-generic-x86_64-with-glibc2.29 # 117~20.04.1-Ubuntu SMP Tue Apr 30 10:35:57 UTC 2024
+- Python: 3.8.10
+- Stable-Baselines3: 1.8.0
+- PyTorch: 1.13.0a0+936e930
+- GPU Enabled: True
+- Numpy: 1.22.2
+- Gym: 0.21.0
